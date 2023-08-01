@@ -1,18 +1,5 @@
 ﻿@page "/products/{ProductId:guid}"
-@inject ICatalog Catalog
 
-<div>@_product.Title</div>
-<div>@_product.Author</div>
-<div>@_product.Price</div>
+<ProductItem Product="_product"/>
 
-@code {
 
-    [Parameter]
-    public Guid ProductId { get; set; }
-
-    private Product _product;
-    protected override void OnInitialized()
-    {
-        _product = Catalog.GetProduct(ProductId);
-    }
-}
