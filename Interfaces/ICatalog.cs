@@ -1,6 +1,4 @@
-﻿using OnlineStoreBlazor.Models;
-
-namespace OnlineStoreBlazor
+﻿namespace OnlineStore
 {
     public interface ICatalog
     {
