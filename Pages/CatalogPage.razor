@@ -1,10 +1,11 @@
 ﻿@page "/catalog"
 @inject ICatalog Catalog
-@inject NavigationManager manager
 
 @foreach (var product in _products)
 {
-    <div>@product.Title </div>
+    <div>
+        <ProductItem Product="product" />
+    </div>
 }
 
 @code

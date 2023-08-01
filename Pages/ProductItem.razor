@@ -1,0 +1,17 @@
+﻿@inject NavigationManager manager
+<button @onclick="ToProductInfoPage">
+    <div>@Product.Title</div>
+</button>
+    <div>@Product.Author</div>
+    <div>@Product.Price</div>
+
+
+@code {
+    [Parameter]
+    public Product Product { get; set; }
+
+    public void ToProductInfoPage()
+    {
+        manager.NavigateTo($"products/{Product.Id}");
+    }
+}
