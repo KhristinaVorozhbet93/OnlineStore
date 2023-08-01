@@ -1,0 +1,17 @@
+﻿@page "/catalog"
+@inject ICatalog Catalog
+
+@foreach(var product in _products)
+{
+    <div>@product.Title</div>
+}
+
+@code
+{
+    private List<Product> _products;
+
+    protected override void OnInitialized()
+    {
+        _products = Catalog.GetProducts();
+    }
+}
