@@ -38,6 +38,13 @@ app.MapControllers();
 
 app.MapGet("/get_products", GetProducts);
 app.MapPost("/add_product", AddProduct);
+app.MapPost("/delete_product", DeleteProduct);
+
+async Task DeleteProduct([FromBody]Product product,AppDbContext dbContext)
+{
+    dbContext.Products.Remove(product);
+    await dbContext.SaveChangesAsync();
+}
 
 async Task AddProduct([FromBody]Product product, AppDbContext dbContext)
 {
