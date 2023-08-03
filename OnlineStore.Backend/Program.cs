@@ -16,11 +16,6 @@ var path = "myApp.db";
 builder.Services.AddDbContext<AppDbContext>
     (options => options.UseSqlite($"DataSource={path}"));
 
-//var dbPath = "myapp.db";
-//builder.Services.AddDbContext<AppDbContext>(
-//   options => options.UseSqlite($"Data Source={dbPath}"));
-
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -40,6 +35,17 @@ app.MapGet("/get_products", GetProducts);
 app.MapGet("/get_product", GetProductById);
 app.MapPost("/add_product", AddProduct);
 app.MapPost("/delete_product", DeleteProduct);
+app.MapPost("/update_product", UpdateProduct);
+
+async Task UpdateProduct([FromQuery]Guid productId, [FromBody] Product newProduct,AppDbContext dbContext)
+{
+    var product = await dbContext.Products.Where(product => product.Id == productId).FirstAsync();
+    product.Title = newProduct.Title;
+    product.Price = newProduct.Price;
+    product.Author = newProduct.Author;
+    product.Description = newProduct.Description;
+    await dbContext.SaveChangesAsync();
+}
 
 async Task<Product> GetProductById([FromQuery] Guid productId, AppDbContext dbContext)
 {
