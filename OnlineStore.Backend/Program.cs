@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OnlineStore.Backend;
 using OnlineStore.Backend.Data;
@@ -36,6 +37,13 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.MapGet("/get_products", GetProducts);
+app.MapPost("/add_product", AddProduct);
+
+async Task AddProduct([FromBody]Product product, AppDbContext dbContext)
+{
+    await dbContext.Products.AddAsync(product);
+    await dbContext.SaveChangesAsync();
+}
 
 async Task<List<Product>> GetProducts(AppDbContext dbContext)
 {
