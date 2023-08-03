@@ -37,8 +37,14 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.MapGet("/get_products", GetProducts);
+app.MapGet("/get_product", GetProductById);
 app.MapPost("/add_product", AddProduct);
 app.MapPost("/delete_product", DeleteProduct);
+
+async Task<Product> GetProductById([FromQuery] Guid productId, AppDbContext dbContext)
+{
+    return await dbContext.Products.Where(product => product.Id == productId).FirstAsync();
+}
 
 async Task DeleteProduct([FromBody]Product product,AppDbContext dbContext)
 {
