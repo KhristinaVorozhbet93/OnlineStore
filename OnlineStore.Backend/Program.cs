@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using OnlineStore.Backend;
+using OnlineStore.Backend.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,7 +12,13 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var path = "myApp.db";
-builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite(path));
+builder.Services.AddDbContext<AppDbContext>
+    (options => options.UseSqlite($"DataSource={path}"));
+
+//var dbPath = "myapp.db";
+//builder.Services.AddDbContext<AppDbContext>(
+//   options => options.UseSqlite($"Data Source={dbPath}"));
+
 
 var app = builder.Build();
 
@@ -27,5 +34,12 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapGet("/get_products", GetProducts);
+
+async Task<List<Product>> GetProducts(AppDbContext dbContext)
+{
+    return await dbContext.Products.ToListAsync();
+}
 
 app.Run();
