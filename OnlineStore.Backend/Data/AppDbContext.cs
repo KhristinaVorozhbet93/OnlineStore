@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using OnlineStore.Backend.Data;
 
 namespace OnlineStore.Backend
 {
