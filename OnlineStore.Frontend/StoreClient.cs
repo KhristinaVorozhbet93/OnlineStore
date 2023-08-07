@@ -28,20 +28,26 @@ namespace OnlineStore
         public async Task<List<Product>> GetProducts()
         {
             var uri = "get_products";
-            var products = await _httpClient.GetFromJsonAsync<List<Product>>(uri);
+            var products = await _httpClient!.GetFromJsonAsync<List<Product>>(uri);
             return products;
         }
         public async Task<Product> GetProduct()
         {
             var uri = "get_product";
-            var products = await _httpClient.GetFromJsonAsync<Product>(uri);
+            var products = await _httpClient!.GetFromJsonAsync<Product>(uri);
             return products;
         }
         public async Task AddProduct(Product product)
         {
             ArgumentNullException.ThrowIfNull(product);
             var uri = "add_product";
-            var products = await _httpClient.PostAsJsonAsync(uri, product);
+            await _httpClient!.PostAsJsonAsync(uri, product);
+        }
+        public async Task DeleteProduct(Product product)
+        {
+            ArgumentNullException.ThrowIfNull(product);
+            var uri = "delete_product";
+            await _httpClient!.PostAsJsonAsync(uri, product);
         }
     }
 }
