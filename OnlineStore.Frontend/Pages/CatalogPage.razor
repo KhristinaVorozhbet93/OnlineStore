@@ -1,9 +1,16 @@
 ﻿@page "/catalog"
 @using OnlineStore.Components
 
-@foreach (var product in _products)
+@if (_products is null)
 {
-    <div>
-        <ProductItem Product="product" />
-    </div>
+    <div>Страница загружается...</div>
+}
+else
+{
+    @foreach (var product in _products)
+    {
+        <div>
+            <ProductItem Product="product"/>
+        </div>
+    }
 }

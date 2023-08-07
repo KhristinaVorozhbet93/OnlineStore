@@ -1,14 +1,16 @@
-﻿namespace OnlineStore
+﻿using System.Net.Http.Json;
+
+namespace OnlineStore
 {
-    public class StoreClient : IDisposable
+    public class StoreClient : IDisposable, IStoreClient
     {
         private readonly string _host; 
-        private readonly HttpClient _httpClient;
+        private readonly HttpClient? _httpClient;
 
-        public StoreClient(string host = "http://mystore.com",HttpClient client = null)
+        public StoreClient(string host = "http://mystore.com/",HttpClient? client = null)
         {
             if (string.IsNullOrEmpty(host)) throw new ArgumentException(nameof(host));
-            if (Uri.TryCreate(host, UriKind.Absolute, out var hostUri))
+            if (!Uri.TryCreate(host, UriKind.Absolute, out var hostUri))
             {
                 throw new ArgumentException("The host adress shoild be a valid URL", nameof(host));
             }
@@ -20,6 +22,12 @@
             }
         }
 
+        public async Task<List<Product>> GetProducts()
+        {
+            var uri = "get_products";
+            var products = await _httpClient.GetFromJsonAsync<List<Product>>(uri);
+            return products;
+        }
         public void Dispose()
         {
             _httpClient.Dispose();

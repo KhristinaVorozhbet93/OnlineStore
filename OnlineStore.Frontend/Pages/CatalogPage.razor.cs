@@ -5,12 +5,13 @@ namespace OnlineStore.Pages
     public partial class CatalogPage
     {
         [Inject]
-        public ICatalog Catalog { get; set; }
+        public IStoreClient StoreClient { get; set; }
+
         private List<Product> _products;
 
-        protected override void OnInitialized()
+        protected override async Task OnInitializedAsync()
         {
-            _products = Catalog.GetProducts();
+            _products = await StoreClient.GetProducts();
         }
     }
 }
