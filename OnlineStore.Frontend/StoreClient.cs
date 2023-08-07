@@ -28,6 +28,12 @@ namespace OnlineStore
             var products = await _httpClient.GetFromJsonAsync<List<Product>>(uri);
             return products;
         }
+        public async Task<Product> GetProduct()
+        {
+            var uri = "get_product";
+            var products = await _httpClient.GetFromJsonAsync<Product>(uri);
+            return products;
+        }
         public void Dispose()
         {
             _httpClient.Dispose();
