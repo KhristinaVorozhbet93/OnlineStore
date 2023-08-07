@@ -16,6 +16,8 @@ var path = "myApp.db";
 builder.Services.AddDbContext<AppDbContext>
     (options => options.UseSqlite($"DataSource={path}"));
 
+builder.Services.AddCors();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -24,6 +26,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors(policy =>
+{
+    policy
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .AllowAnyOrigin();
+});
 
 app.UseHttpsRedirection();
 
