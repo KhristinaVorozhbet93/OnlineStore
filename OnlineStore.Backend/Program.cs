@@ -31,42 +31,54 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.MapGet("/get_products", GetProducts);
-app.MapGet("/get_product", GetProductById);
-app.MapPost("/add_product", AddProduct);
-app.MapPost("/delete_product", DeleteProduct);
-app.MapPost("/update_product", UpdateProduct);
+app.MapGet("/get_products", GetProductsAsync);
+app.MapGet("/get_product", GetProductByIdAsync);
+app.MapPost("/add_product", AddProductAsync);
+app.MapPost("/delete_product", DeleteProductAsync);
+app.MapPost("/update_product", UpdateProductAsync);
 
-async Task UpdateProduct([FromQuery]Guid productId, [FromBody] Product newProduct,AppDbContext dbContext)
+async Task<IResult> GetProductsAsync(AppDbContext dbContext)
 {
-    var product = await dbContext.Products.Where(product => product.Id == productId).FirstAsync();
+    var products =  await dbContext.Products.ToListAsync();
+    if (products is null)
+    {
+        return Results.NotFound();
+    }
+    return Results.Ok(products);
+}
+async Task<IResult> GetProductByIdAsync([FromQuery] Guid productId, AppDbContext dbContext)
+{
+    var product = 
+        await dbContext.Products.Where(product => product.Id == productId).FirstOrDefaultAsync();
+    if (product == null)
+    {
+        return Results.NotFound();
+    }
+    return Results.Ok(product);
+}
+async Task AddProductAsync([FromBody] Product product, AppDbContext dbContext)
+{
+    await dbContext.Products.AddAsync(product);
+    await dbContext.SaveChangesAsync();
+}
+async Task<IResult> UpdateProductAsync([FromQuery]Guid productId, [FromBody] Product newProduct,AppDbContext dbContext)
+{
+    var product = await dbContext.Products.Where(product => product.Id == productId).FirstOrDefaultAsync();
+    if (product is null)
+    {
+        return Results.NotFound();
+    }
     product.Title = newProduct.Title;
     product.Price = newProduct.Price;
     product.Author = newProduct.Author;
     product.Description = newProduct.Description;
     await dbContext.SaveChangesAsync();
+    return Results.Ok();
 }
-
-async Task<Product> GetProductById([FromQuery] Guid productId, AppDbContext dbContext)
-{
-    return await dbContext.Products.Where(product => product.Id == productId).FirstAsync();
-}
-
-async Task DeleteProduct([FromBody]Product product,AppDbContext dbContext)
+async Task DeleteProductAsync([FromBody]Product product,AppDbContext dbContext)
 {
     dbContext.Products.Remove(product);
     await dbContext.SaveChangesAsync();
-}
-
-async Task AddProduct([FromBody]Product product, AppDbContext dbContext)
-{
-    await dbContext.Products.AddAsync(product);
-    await dbContext.SaveChangesAsync();
-}
-
-async Task<List<Product>> GetProducts(AppDbContext dbContext)
-{
-    return await dbContext.Products.ToListAsync();
 }
 
 app.Run();
