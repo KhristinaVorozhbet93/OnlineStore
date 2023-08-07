@@ -21,7 +21,10 @@ namespace OnlineStore
                 _httpClient.BaseAddress = hostUri;
             }
         }
-
+        public void Dispose()
+        {
+            _httpClient.Dispose();
+        }
         public async Task<List<Product>> GetProducts()
         {
             var uri = "get_products";
@@ -34,9 +37,11 @@ namespace OnlineStore
             var products = await _httpClient.GetFromJsonAsync<Product>(uri);
             return products;
         }
-        public void Dispose()
+        public async Task AddProduct(Product product)
         {
-            _httpClient.Dispose();
+            ArgumentNullException.ThrowIfNull(product);
+            var uri = "add_product";
+            var products = await _httpClient.PostAsJsonAsync(uri, product);
         }
     }
 }
